@@ -1,0 +1,73 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Press Counter</title>
+    <style>
+        body { 
+            margin: 0; 
+            height: 100%; 
+            overflow: hidden; 
+        }
+        .counter {
+            display: flex;
+            color: white;
+            width: 300px;
+            height: 600px; 
+            font-size: 300px;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            margin: 10px;
+            z-index: 2;
+        }
+        #myVideo { 
+            position: absolute; 
+            right: 0; 
+            bottom: 0; 
+            min-width: 100%; 
+            min-height: 100%; 
+            width: 1920px; 
+            height: 1080px; 
+        }
+        #myImage { 
+            position: absolute; 
+            right: 0; 
+            bottom: 0; 
+            min-width: 100%; 
+            min-height: 100%; 
+            width: 1200px; 
+            height: 600px; 
+            border-radius: 50px;
+            z-index: 1;
+        }
+
+
+    </style>
+</head>
+<body style="display: flex; background-color: rgb(255, 255, 255); justify-content: center;align-items: center;">
+    <video autoplay muted loop id="myVideo">
+        <source src="Background.mp4" type="video/mp4">
+      </video>
+    <div style="display: flex; justify-content: center; width: 1200px;height: 600px; align-items: center; position: absolute;">
+        <img src="Colors.jpg" id="myimage">
+        <div id="counter1" class="counter">
+            0</div>
+        <div id="counter2" class="counter">
+            0</div>
+        <div id="counter3" class="counter">
+            0</div>
+        <div id="counter4" class="counter">
+            0</div>
+
+    </div>
+    <script>
+        document.addEventListener("keydown", function(event) {
+            if (event.key >= '1' && event.key <= '4') {
+                let counterId = "counter" + event.key;
+                let counterElement = document.getElementById(counterId);
+                counterElement.textContent = parseInt(counterElement.textContent) + 1;
+            }
+        });
+    </script>
+</body>
