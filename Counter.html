@@ -8,15 +8,15 @@
             height: 100%; 
             overflow: hidden; 
         }
-        .initial{
+        .menu{
             display: flexbox;
-            background-color: black;
+            background-color: white;
             justify-content: space-around;
             align-content: center;
             border-radius: 20px;
-            width: 600px;
-            height: 300px;
-            color: white;
+            min-width: 600px;
+            min-height: 300px;
+            color: black;
             font-family: 'Arial Narrow Bold', sans-serif;
             font-weight: 100;
             text-align: center;
@@ -24,13 +24,12 @@
         }
         .counter {
             display: flex;
-
-            flex-direction: row;
+            flex-direction: column;
             color: black;
             background-color: aliceblue;
             border-radius: 20px;
             width: 300px;
-            height: 300px; 
+            min-height: 300px; 
             font-size: 300px;
             justify-content: center;
             align-items: center;
@@ -39,6 +38,32 @@
             margin: 10px;
             z-index: 2;
             font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        }
+        .menuButton{
+            display: flex;
+            justify-self: center;
+            margin: 30px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+        .inputField {
+            width: 200px;
+            padding: 5px;
+            margin: 5px 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .teams {
+            color: black;
+            font-size: 50px;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            text-align: center;
+            margin: 0;
         }
         #counter1 {
             background-color: aqua;
@@ -72,6 +97,10 @@
             border-radius: 50px;
             z-index: 1;
         }
+        #names {
+            z-index: -1;
+            position: absolute;
+        }
 
 
     </style>
@@ -82,40 +111,111 @@
       </video>
     <div id="myContainer" style="display: flex; justify-content: center; width: 1800px;height: 600px; align-items: center; position: absolute;">
     </div>
-    <div class="initial" id="start">
+    <div class="menu" id="init">
         <H1>Choose Your Teams</H1>
-        <span>How Many?  <input id="teamCount"></span>
-        <Div style="margin: 30px;"><Button id="createButton">Create</Button></Div>
+        <span style="justify-self: center;">How many teams?<input id="teamCount" class="inputField"></span>
+        <Div><Button id="initButton" class="menuButton">Create Teams</Button></Div>
     </div>
+    <div class="menu" id="names">
+        <H1>Team Names</H1>
+    </div>
+
+
     <script>
-        //Finds Button element
-        const createButton = document.getElementById('createButton');
+        //Gets menu elements
+        const initMenu = document.getElementById('init');
+        const namesMenu = document.getElementById('names');
+        let teamCount = 0;
+        
+        //List to be used to store team names
+        let teamNames = [];
+        
+
+        //Creates the team name divs
+        //This function is called when the user clicks the "Create Teams" button
+        function teamNameCreate(total) {
+            for (let num = 0; num < total; num++) {
+                var container = document.getElementById("names");
+                var nameDiv = document.createElement("div");
+                nameDiv.setAttribute("id", "nameCreator" + (num + 1));
+                nameDiv.textContent = "Team:";
+                console.log(nameDiv.id);
+                container.appendChild(nameDiv);                
+            }
+            for (let num = 0; num < total; num++) {
+                    var container = document.getElementById("nameCreator" + (num + 1));
+                    var nameI = document.createElement("input");
+                    nameI.setAttribute("id", "nameInput" + (num + 1));
+                    nameI.setAttribute("class", "inputField");
+                    container.appendChild(nameI);
+            }
+            var container = document.getElementById("names");
+            var nameButton = document.createElement("button");
+            nameButton.setAttribute("id", "nameButton");
+            nameButton.setAttribute("class", "menuButton");
+            nameButton.textContent = "Name Teams";
+            container.appendChild(nameButton);
+
+            // Attach event listener to the new button
+            nameButton.addEventListener("click", function(event) {
+                for (let num = 0; num < total; num++) {
+                    var inputName = document.getElementById("nameInput" + (num + 1)).value;
+                    teamNames.push(inputName);
+                    console.log(inputName);
+                }
+                namesMenu.remove();
+                teamCountCreate(teamCount);
+            });
+
+            
+        }
+
+        //Creates the team count divs
+        //This function is called when the user clicks the "Name Teams" button
         function teamCountCreate(total){
             for (let num = 0; num < total; num++) {
                 var container = document.getElementById("myContainer");
                 var counterT = document.createElement("div");
-                console.log(counterT);
-                counterT.setAttribute("id", "counter1");
+                counterT.setAttribute("id", "counter" + (num + 1));
                 counterT.setAttribute("class", "counter");
-                counterT.textContent="0";
                 container.appendChild(counterT);
             }
-            
+            for (let num = 0; num < total; num++) {
+                var container = document.getElementById("counter" + (num + 1));
+                var counterT = document.createElement("div");
+                counterT.setAttribute("id", "teamScore" + (num + 1));
+                counterT.setAttribute("class", "score");
+                counterT.textContent= "0";
+                container.appendChild(counterT);
+            }
+            for (let num = 0; num < total; num++) {
+                var container = document.getElementById("counter" + (num + 1));
+                var counterT = document.createElement("h1");
+                counterT.setAttribute("id", "teamName" + (num + 1));
+                counterT.setAttribute("class", "teams");
+                counterT.textContent= teamNames[num];
+                container.appendChild(counterT);
+            }
+            document.addEventListener("keydown", function(event) {
+             if (event.key >= '1' && event.key <= teamCount) {
+                 let counterId = "teamScore" + event.key;
+                 let counterElement = document.getElementById(counterId);
+                 counterElement.textContent = parseInt(counterElement.textContent) + 1;
+             }
+         });
         }
+
         //Listens for button Click
-        createButton.addEventListener("click", function(event) {
-            let teamCount = document.getElementById("teamCount").value;
+        //When the button is clicked, it gets the value from the input field and calls the teamNameCreate function
+        //It also removes the initial menu and displays the names menu
+        const initButton = document.getElementById('initButton');
+        initButton.addEventListener("click", function(event) {
+            teamCount = document.getElementById("teamCount").value;
             console.log(teamCount);
-            document.getElementById('start').style.opacity = "0%";
-            teamCountCreate(teamCount);
+            initMenu.remove();
+            namesMenu.style.zIndex = 2;
+            namesMenu.style.position = "relative";
+            teamNameCreate(teamCount);
         })
-        //Increases values of teams with respective keyboard button
-        // document.addEventListener("keydown", function(event) {
-        //     if (event.key >= '1' && event.key <= '5') {
-        //         let counterId = "counter" + event.key;
-        //         let counterElement = document.getElementById(counterId);
-        //         counterElement.textContent = parseInt(counterElement.textContent) + 1;
-        //     }
-        // });
     </script>
 </body>
