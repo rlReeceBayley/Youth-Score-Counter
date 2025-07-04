@@ -8,11 +8,29 @@
             height: 100%; 
             overflow: hidden; 
         }
+        .initial{
+            display: flexbox;
+            background-color: black;
+            justify-content: space-around;
+            align-content: center;
+            border-radius: 20px;
+            width: 600px;
+            height: 300px;
+            color: white;
+            font-family: 'Arial Narrow Bold', sans-serif;
+            font-weight: 100;
+            text-align: center;
+            z-index: 2;
+        }
         .counter {
             display: flex;
-            color: white;
+
+            flex-direction: row;
+            color: black;
+            background-color: aliceblue;
+            border-radius: 20px;
             width: 300px;
-            height: 600px; 
+            height: 300px; 
             font-size: 300px;
             justify-content: center;
             align-items: center;
@@ -20,6 +38,19 @@
             text-align: center;
             margin: 10px;
             z-index: 2;
+            font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        }
+        #counter1 {
+            background-color: aqua;
+        }
+        #counter2 {
+            background-color: chartreuse;
+        }
+        #counter3 {
+            background-color: coral;
+        }
+        #counter4 {
+            background-color: lightpink;
         }
         #myVideo { 
             position: absolute; 
@@ -49,25 +80,42 @@
     <video autoplay muted loop id="myVideo">
         <source src="Background.mp4" type="video/mp4">
       </video>
-    <div style="display: flex; justify-content: center; width: 1200px;height: 600px; align-items: center; position: absolute;">
-        <img src="Colors.jpg" id="myimage">
-        <div id="counter1" class="counter">
-            0</div>
-        <div id="counter2" class="counter">
-            0</div>
-        <div id="counter3" class="counter">
-            0</div>
-        <div id="counter4" class="counter">
-            0</div>
-
+    <div id="myContainer" style="display: flex; justify-content: center; width: 1800px;height: 600px; align-items: center; position: absolute;">
+    </div>
+    <div class="initial" id="start">
+        <H1>Choose Your Teams</H1>
+        <span>How Many?  <input id="teamCount"></span>
+        <Div style="margin: 30px;"><Button id="createButton">Create</Button></Div>
     </div>
     <script>
-        document.addEventListener("keydown", function(event) {
-            if (event.key >= '1' && event.key <= '4') {
-                let counterId = "counter" + event.key;
-                let counterElement = document.getElementById(counterId);
-                counterElement.textContent = parseInt(counterElement.textContent) + 1;
+        //Finds Button element
+        const createButton = document.getElementById('createButton');
+        function teamCountCreate(total){
+            for (let num = 0; num < total; num++) {
+                var container = document.getElementById("myContainer");
+                var counterT = document.createElement("div");
+                console.log(counterT);
+                counterT.setAttribute("id", "counter1");
+                counterT.setAttribute("class", "counter");
+                counterT.textContent="0";
+                container.appendChild(counterT);
             }
-        });
+            
+        }
+        //Listens for button Click
+        createButton.addEventListener("click", function(event) {
+            let teamCount = document.getElementById("teamCount").value;
+            console.log(teamCount);
+            document.getElementById('start').style.opacity = "0%";
+            teamCountCreate(teamCount);
+        })
+        //Increases values of teams with respective keyboard button
+        // document.addEventListener("keydown", function(event) {
+        //     if (event.key >= '1' && event.key <= '5') {
+        //         let counterId = "counter" + event.key;
+        //         let counterElement = document.getElementById(counterId);
+        //         counterElement.textContent = parseInt(counterElement.textContent) + 1;
+        //     }
+        // });
     </script>
 </body>
