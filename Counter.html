@@ -46,6 +46,9 @@
                 1px -1px 0 #000,
                -1px  1px 0 #000,
                 1px  1px 0 #000;
+            animation-name: scoreTilesPulse;
+            animation-iteration-count: infinite;
+            animation-duration: 1s;
         }
         .menuButton{
             display: flex;
@@ -78,27 +81,70 @@
                -1px  1px 0 #000,
                 1px  1px 0 #000;
         }
+        #reducer {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            opacity: 0;
+            background-color: rgb(129, 0, 0);
+            z-index: 5;
+            border-radius: 100%;
+            bottom: 10px;
+            right: 10px;
+        }
+        .winButton{
+            cursor: pointer;
+            display: flex;
+            justify-self: center;
+            margin: 30px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: 700;
+            background-color: #FFD700; /* Gold */
+            box-shadow: #FFD700 0 0 30px 12px;
+            color: black;
+            opacity: 0;
+        }
         #counter1 {
             background-color: aqua;
+            box-shadow: rgba(0, 255, 255, 0.753) 0 0 20px 5px;
         }
         #counter2 {
             background-color: chartreuse;
+            box-shadow: rgba(128, 255, 0, 0.753) 0 0 20px 5px;
+
         }
         #counter3 {
             background-color: coral;
+            box-shadow: rgba(255, 127, 80, 0.753) 0 0 20px 5px;
         }
         #counter4 {
             background-color: lightpink;
+            box-shadow: rgba(255, 182, 193, 0.753) 0 0 20px 5px;
         }
         #names {
             z-index: -1;
             position: absolute;
         }
+        @keyframes scoreTilesPulse{
+            0% {transform: scale(1);}
+            50% {transform: scale(1.02);}
+            100% {transform: scale(1);}
+        }
+
+        @keyframes videoFadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
 
 
     </style>
 </head>
-<body style="display: flex; background-color: rgb(255, 255, 255); justify-content: center;align-items: center;">
+<body style="display: flex; background-color: rgb(0, 0, 0); justify-content: center;align-items: center;">
+    <div id="reducer"></div>
     <div id="myContainer" style="display: flex; justify-content: center; width: 1800px;height: 600px; align-items: center; position: absolute;">        
         <div class="menu" id="init">
             <H1>Choose Your Teams</H1>
@@ -108,6 +154,9 @@
         <div class="menu" id="names">
             <H1>Team Names</H1>
         </div>
+        
+        <video autoplay muted loop id="backgroundVideo" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -1; object-fit: cover; opacity: 0;">
+            <source src="https://cdn.pixabay.com/video/2022/02/10/107303-676158761_large.mp4">
     </div>
 
     <script>
@@ -118,6 +167,14 @@
         
         //List to be used to store team names
         let teamNames = [];
+
+        //Score reducer key is Capslock, this listens for the key press and toggles the reducer state
+        var capsKey = false;
+        document.addEventListener("keydown", function(event) {
+            if(event.key === "CapsLock") {
+                capsKey = !capsKey;
+                reducer.style.opacity = (capsKey) ? '0.5' : '0';
+            }});
         
 
         //Creates the team name divs
@@ -163,7 +220,8 @@
                 var container = document.getElementById("myContainer");
                 var counterMain = document.createElement("div");
                 counterMain.setAttribute("id", "counter" + (num + 1));
-                counterMain.setAttribute("class", "counter");                
+                counterMain.setAttribute("class", "counter");           
+                counterMain.style.animationDuration = Math.random() * 1.2 + 1.8 + "s";
 
                 var counterScore = document.createElement("div");
                 counterScore.setAttribute("id", "teamScore" + (num + 1));
@@ -173,18 +231,33 @@
                 var counterTeam = document.createElement("h1");
                 counterTeam.setAttribute("id", "teamName" + (num + 1));
                 counterTeam.setAttribute("class", "teams");
-                counterTeam.textContent= teamNames[num];                
+                counterTeam.textContent= teamNames[num];     
+                
+                var winnerButton = document.createElement("button");
+                winnerButton.setAttribute("id", "winnerButton" + (num + 1));
+                winnerButton.setAttribute("class", "winButton");
+                winnerButton.textContent = "👑 Declare Winner";
 
                 container.appendChild(counterMain);
                 counterMain.appendChild(counterScore);
+                counterMain.appendChild(winnerButton);
                 counterMain.appendChild(counterTeam);
+                
+                var bgVideo = document.getElementById("backgroundVideo");
+                bgVideo.style.animationName = "videoFadeIn";
+                bgVideo.style.animationDuration = "3s";
+                bgVideo.style.opacity = "1";
             }
+
             
             document.addEventListener("keydown", function(event) {
              if (event.key >= '1' && event.key <= teamCount) {
                  let counterId = "teamScore" + event.key;
                  let counterElement = document.getElementById(counterId);
-                 counterElement.textContent = parseInt(counterElement.textContent) + 1;
+                 counterElement.textContent = (capsKey) ? parseInt(counterElement.textContent) - 1 : parseInt(counterElement.textContent) + 1;
+             }
+             else if (event.key === 'Escape') {
+                 window.location.reload();
              }
          });
         }
